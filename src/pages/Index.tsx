@@ -1,13 +1,15 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import ServiceCards from "@/components/ServiceCards";
+import ServicesSection from "@/components/ServicesSection";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "#0B0E14" }}>
       <Header />
       <HeroSection />
-      <ServiceCards />
+      <ServicesSection />
+      <Footer />
     </div>
   );
 };
