@@ -4,31 +4,23 @@ import portrait from "@/assets/portrait.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden px-8 md:px-16 pt-24">
+    <section className="relative min-h-screen flex items-center overflow-hidden px-6 md:px-16 lg:px-20 pt-24 pb-12">
       {/* Vertical Text - Left Side */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }}
-        className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:block"
+        className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-6"
       >
-        <span className="text-vertical">Product designer</span>
-      </motion.div>
-
-      {/* Year - Bottom Left */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1 }}
-        className="absolute left-8 bottom-12 hidden lg:block"
-      >
-        <span className="text-vertical">2024</span>
+        <div className="divider-line-vertical h-20" />
+        <span className="text-vertical">AI Solutions 2024</span>
+        <div className="divider-line-vertical h-20" />
       </motion.div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-4 items-center lg:pl-16">
         {/* Left Content */}
-        <div className="flex flex-col gap-8 lg:pl-12">
+        <div className="flex flex-col gap-6">
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -51,12 +43,11 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-1"
           >
-            <h1 className="text-hero">Hello</h1>
-            <p className="text-muted-foreground text-lg md:text-xl max-w-md">
-              — It's D.Nova a design wizard
-            </p>
+            <h1 className="text-hero-large">18</h1>
+            <h2 className="text-hero">Years</h2>
+            <h2 className="text-hero text-muted-foreground/60">Experience</h2>
           </motion.div>
 
           {/* Scroll Indicator */}
@@ -64,9 +55,9 @@ const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.2 }}
-            className="mt-8"
+            className="mt-4"
           >
-            <a href="#about" className="scroll-indicator group">
+            <a href="#services" className="scroll-indicator group">
               <span>Scroll down</span>
               <ArrowDown
                 size={14}
@@ -83,14 +74,14 @@ const HeroSection = () => {
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           className="relative flex justify-center lg:justify-end"
         >
-          <div className="relative w-full max-w-lg lg:max-w-none lg:w-[120%] lg:-mr-16">
+          <div className="relative w-full max-w-md lg:max-w-none lg:w-[115%] lg:-mr-12">
             <img
               src={portrait}
-              alt="D.Nova - Product Designer"
+              alt="Professional Portrait"
               className="w-full h-auto object-cover grayscale"
             />
             {/* Subtle gradient overlay for blending */}
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-background/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-background/30 pointer-events-none" />
           </div>
         </motion.div>
       </div>
