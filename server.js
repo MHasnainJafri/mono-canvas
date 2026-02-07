@@ -2,6 +2,11 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { Resend } from 'resend';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,6 +16,9 @@ const OWNER_EMAIL = 'eng.muhammadhasnain@gmail.com';
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend (Vite build output)
+app.use(express.static(join(__dirname, 'dist')));
 
 // Minimalistic email template - notification to owner
 function ownerTemplate({ name, email, subject, message }) {
@@ -128,6 +136,7 @@ function userTemplate({ name, subject, message }) {
 </html>`;
 }
 
+// API endpoint
 app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
 
@@ -136,7 +145,6 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
-    // Send notification email to you
     const ownerResult = await resend.emails.send({
       from: 'Muhammad Hasnain <hello@mhasnain.com>',
       reply_to: email,
@@ -146,7 +154,6 @@ app.post('/api/contact', async (req, res) => {
     });
     console.log('Owner email result:', JSON.stringify(ownerResult, null, 2));
 
-    // Send confirmation email to the user
     const userResult = await resend.emails.send({
       from: 'Muhammad Hasnain <hello@mhasnain.com>',
       reply_to: OWNER_EMAIL,
@@ -161,6 +168,11 @@ app.post('/api/contact', async (req, res) => {
     console.error('Resend error:', JSON.stringify(error, null, 2));
     res.status(500).json({ error: 'Failed to send email. Please try again later.' });
   }
+});
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {

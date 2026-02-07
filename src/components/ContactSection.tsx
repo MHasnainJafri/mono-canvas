@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Linkedin, Github, Loader2, CheckCircle } from "lucide-react";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
