@@ -1,26 +1,8 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
 import { Resend } from 'resend';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const app = express();
-const PORT = process.env.PORT || 3001;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const OWNER_EMAIL = 'eng.muhammadhasnain@gmail.com';
 
-app.use(cors());
-app.use(express.json());
-
-// Serve static frontend (Vite build output)
-app.use(express.static(join(__dirname, 'dist')));
-
-// Minimalistic email template - notification to owner
 function ownerTemplate({ name, email, subject, message }) {
   return `
 <!DOCTYPE html>
@@ -30,19 +12,13 @@ function ownerTemplate({ name, email, subject, message }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:40px 20px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:#ffffff;border-radius:8px;border:1px solid #e5e7eb;">
-        
-        <!-- Header -->
         <tr><td style="padding:32px 32px 0;">
           <p style="margin:0;font-size:13px;color:#6b7280;letter-spacing:0.05em;text-transform:uppercase;">New Inquiry</p>
           <h1 style="margin:8px 0 0;font-size:20px;font-weight:600;color:#111827;">${subject}</h1>
         </td></tr>
-
-        <!-- Divider -->
         <tr><td style="padding:20px 32px;">
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
         </td></tr>
-
-        <!-- Sender Info -->
         <tr><td style="padding:0 32px;">
           <table cellpadding="0" cellspacing="0" style="width:100%;">
             <tr>
@@ -57,18 +33,13 @@ function ownerTemplate({ name, email, subject, message }) {
             </tr>
           </table>
         </td></tr>
-
-        <!-- Message -->
         <tr><td style="padding:12px 32px 32px;">
           <p style="margin:0 0 8px;font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;">Message</p>
           <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;">${message.replace(/\n/g, '<br>')}</p>
         </td></tr>
-
-        <!-- Footer -->
         <tr><td style="padding:16px 32px;background-color:#f9fafb;border-top:1px solid #e5e7eb;border-radius:0 0 8px 8px;">
           <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">Reply directly to this email to respond to ${name}.</p>
         </td></tr>
-
       </table>
     </td></tr>
   </table>
@@ -76,7 +47,6 @@ function ownerTemplate({ name, email, subject, message }) {
 </html>`;
 }
 
-// Minimalistic email template - confirmation to user
 function userTemplate({ name, subject, message }) {
   return `
 <!DOCTYPE html>
@@ -86,26 +56,18 @@ function userTemplate({ name, subject, message }) {
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:40px 20px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:#ffffff;border-radius:8px;border:1px solid #e5e7eb;">
-        
-        <!-- Header -->
         <tr><td style="padding:32px 32px 0;">
           <h1 style="margin:0;font-size:20px;font-weight:600;color:#111827;">Hi ${name},</h1>
           <p style="margin:12px 0 0;font-size:14px;color:#6b7280;line-height:1.6;">Thank you for reaching out. I've received your message and will get back to you within 24 hours.</p>
         </td></tr>
-
-        <!-- Divider -->
         <tr><td style="padding:20px 32px;">
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:0;">
         </td></tr>
-
-        <!-- Message Summary -->
         <tr><td style="padding:0 32px;">
           <p style="margin:0 0 4px;font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;">Your message</p>
           <p style="margin:0 0 4px;font-size:15px;color:#111827;font-weight:500;">${subject}</p>
           <p style="margin:8px 0 0;font-size:13px;color:#6b7280;line-height:1.6;font-style:italic;">"${message.replace(/\n/g, '<br>')}"</p>
         </td></tr>
-
-        <!-- CTA -->
         <tr><td style="padding:24px 32px 32px;">
           <p style="margin:0;font-size:14px;color:#374151;line-height:1.6;">In the meantime, feel free to check out my work:</p>
           <table cellpadding="0" cellspacing="0" style="margin-top:16px;">
@@ -122,13 +84,10 @@ function userTemplate({ name, subject, message }) {
             </tr>
           </table>
         </td></tr>
-
-        <!-- Footer -->
         <tr><td style="padding:16px 32px;background-color:#f9fafb;border-top:1px solid #e5e7eb;border-radius:0 0 8px 8px;">
           <p style="margin:0 0 2px;font-size:13px;color:#374151;font-weight:500;">Muhammad Hasnain</p>
           <p style="margin:0;font-size:12px;color:#9ca3af;">AI & Full Stack Developer &middot; CEO at Anssol</p>
         </td></tr>
-
       </table>
     </td></tr>
   </table>
@@ -136,8 +95,20 @@ function userTemplate({ name, subject, message }) {
 </html>`;
 }
 
-// API endpoint
-app.post('/api/contact', async (req, res) => {
+export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const { name, email, subject, message } = req.body;
 
   if (!name || !email || !subject || !message) {
@@ -165,16 +136,7 @@ app.post('/api/contact', async (req, res) => {
 
     res.json({ success: true, message: 'Emails sent successfully!' });
   } catch (error) {
-    console.error('Resend error:', JSON.stringify(error, null, 2));
+    console.error('Resend error:', error);
     res.status(500).json({ error: 'Failed to send email. Please try again later.' });
   }
-});
-
-// SPA fallback - serve index.html for all non-API routes
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'dist', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+}
