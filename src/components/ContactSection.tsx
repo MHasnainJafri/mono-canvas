@@ -1,7 +1,38 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Linkedin, Github, Loader2, CheckCircle } from "lucide-react";
+import { useState } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const ContactSection = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMsg("");
+    try {
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send message");
+      setStatus("success");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err: any) {
+      setStatus("error");
+      setErrorMsg(err.message || "Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <section id="contact" className="relative px-4 sm:px-6 md:px-16 lg:px-20 py-12 sm:py-16 lg:py-24">
       {/* Vertical Text - Left Side */}
@@ -147,7 +178,7 @@ const ContactSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 block">
@@ -155,6 +186,10 @@ const ContactSection = () => {
                   </label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
                     placeholder="Your name"
                     className="w-full px-4 py-3 rounded-lg border border-border/50 bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-border transition-colors"
                   />
@@ -165,6 +200,10 @@ const ContactSection = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     placeholder="your@email.com"
                     className="w-full px-4 py-3 rounded-lg border border-border/50 bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-border transition-colors"
                   />
@@ -177,6 +216,10 @@ const ContactSection = () => {
                 </label>
                 <input
                   type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
                   placeholder="Project inquiry"
                   className="w-full px-4 py-3 rounded-lg border border-border/50 bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-border transition-colors"
                 />
@@ -188,17 +231,44 @@ const ContactSection = () => {
                 </label>
                 <textarea
                   rows={5}
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
                   placeholder="Tell me about your project..."
                   className="w-full px-4 py-3 rounded-lg border border-border/50 bg-card text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-border transition-colors resize-none"
                 />
               </div>
 
+              {status === "success" && (
+                <div className="flex items-center gap-2 text-sm text-green-500 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3">
+                  <CheckCircle size={16} />
+                  Message sent successfully! Check your email for confirmation.
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+                  {errorMsg}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background font-medium text-sm hover:bg-foreground/90 transition-colors duration-300"
+                disabled={status === "loading"}
+                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background font-medium text-sm hover:bg-foreground/90 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Send size={16} />
-                Send Message
+                {status === "loading" ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Send Message
+                  </>
+                )}
               </button>
             </form>
           </motion.div>

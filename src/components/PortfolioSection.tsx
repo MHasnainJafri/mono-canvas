@@ -1,59 +1,48 @@
 import { motion } from "framer-motion";
+import { ExternalLink } from "lucide-react";
 
 const projects = [
+  {
+    title: "Restoliv - Multi-Vendor Restaurant Platform",
+    description: "Multi-vendor restaurant platform with Laravel backend, Next.js web app, and three Flutter mobile apps for deliveryman, user, and vendor. Complete food ordering and delivery ecosystem.",
+    tags: ["Laravel", "Next.js", "Flutter", "Multi-vendor"],
+    image: "/restoliv.png",
+    link: "https://www.restoliv.fr/",
+  },
+  {
+    title: "Samanta - Video Interpretation Platform",
+    description: "Multi-platform app connecting users with professional interpreters for real-time video calls using WebSockets and third-party translation APIs.",
+    tags: ["Laravel", "Flutter", "WebSockets", "APIs"],
+    image: "/samanta.png",
+    link: "https://www.samantapp.com/",
+  },
   {
     title: "Blogger Prompt",
     description: "A Generative AI Business Assistant. A cutting-edge tool designed to revolutionize the way you interact with information. Tailored to meet the unique needs of your business, it seamlessly integrates with your data, PDFs, DOCs, providing intelligent and contextually relevant responses.",
     tags: ["Generative AI", "RAG", "Business Assistant", "NLP"],
     image: "/boggler prompt.png",
+    link: null,
   },
   {
     title: "Blogger Assist",
     description: "A Generative AI Meeting Assistant. Boggler Assist is a Meeting Assistant that utilizes advanced speech recognition technology for real-time transcription during meetings. It transforms into including executive summaries, detailed notes, action items, open ideas and email recaps.",
     tags: ["Speech Recognition", "AI", "Meeting Assistant", "Transcription"],
     image: "/boggler assist.jpg",
+    link: null,
   },
   {
     title: "Me+ai ChatBot",
     description: "Introducing Me+ai Chatbot – your personalized mobile companion with Google PALM integration. This app communicates based on your interests, knowledge, and documents, offering push notifications and tailored suggestions.",
     tags: ["Google PALM", "Mobile App", "Chatbot", "Personalization"],
     image: "/mi_ai chatbot.jpg",
-  },
-  {
-    title: "Potolo - Multi-Tenant Platform",
-    description: "Large-scale multi-service platform with microservices architecture supporting e-commerce, ride-hailing, logistics, and ticketing across multiple countries with 10+ user roles.",
-    tags: ["Laravel", "Microservices", "Keycloak", "Docker"],
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+    link: null,
   },
   {
     title: "Scribe – AI Healthcare Assistant",
     description: "AI-powered solution transcribing doctor-patient conversations into structured SOAP notes with speaker identification, reducing documentation time by 60%.",
     tags: ["Python", "NLP", "Laravel", "Speech Recognition"],
     image: "/scribe.png",
-  },
-  {
-    title: "MiCube – AI Accounting Solution",
-    description: "AI-driven accounting platform automating P&L statements, balance sheets with real-time analytics and ML-powered insights for enterprise financial decisions.",
-    tags: ["React.js", "Python", "ML", "Data Science"],
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop",
-  },
-  {
-    title: "SmartEye - Vehicle Tracking & Analytics",
-    description: "Real-time vehicle detection system using CARLA simulator for synthetic data and custom ResNet-based computer vision model for traffic monitoring.",
-    tags: ["Computer Vision", "ResNet", "CARLA", "Python"],
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Samanta - Video Interpretation Platform",
-    description: "Multi-platform app connecting users with professional interpreters for real-time video calls using WebSockets and third-party translation APIs.",
-    tags: ["Laravel", "Flutter", "WebSockets", "APIs"],
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop",
-  },
-  {
-    title: "E-Commerce Platform",
-    description: "Scalable e-commerce platform increasing user engagement by 30% and reducing page load time by 40%, supporting 150K daily active users with 99.9% uptime.",
-    tags: ["Laravel", "React.js", "PostgreSQL", "Docker"],
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop",
+    link: null,
   },
 ];
 
@@ -134,6 +123,17 @@ const PortfolioSection = () => {
                   ))}
                 </div>
 
+                {project.link && (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/70 transition-colors"
+                  >
+                    <span>Visit Project</span>
+                    <ExternalLink size={14} />
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}
